@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetCode Questions - Enhanced List (Dark Theme)</title>
+    <style>
+        :root {
+            --bg-color: #1c1c1e; --text-color: #e2e2e2; --header-bg-color: #28282a;
+            --table-border-color: #3a3a3c; --input-bg-color: #222224; --input-border-color: #4a4a4c;
+            --input-text-color: #e2e2e2; 
+            --button-main-bg-color: #3d3d40;
+            --button-main-hover-bg-color: #4f4f52;
+            --bubble-bg-color: #303032; --bubble-border-color: #505052; --bubble-hover-bg-color: #404042;
+            --active-bubble-bg-color: #45454a;
+            --link-color: #5eabff; --link-hover-color: #7ec4ff; 
+            --status-bg-success: #184818; 
+            --status-bg-error: #501818;   
+            --placeholder-color: #666; --done-indicator-color: #4caf50;
+            --row-done-bg-color: #2a3a2a; --action-icon-color: #9dbef7;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0 auto; padding: 20px; max-width: 950px;
+            background-color: var(--bg-color); color: var(--text-color); line-height: 1.6;
+        }
+        h1, h2, h3 { margin:1.5em 0 0.5em; color:var(--text-color); border-bottom:1px solid var(--table-border-color); padding-bottom:0.3em;}
+        h1 { font-size: 1.8em; }
+        p { margin-bottom: 1em; }
+        table { width:100%; border-collapse:collapse; margin-top:1em; font-size:0.88em; }
+        th, td { border:1px solid var(--table-border-color); padding:7px 10px; text-align:left; vertical-align:top;}
+        th { background-color:var(--header-bg-color); cursor:pointer; font-weight:bold; color:var(--text-color);}
+        th:hover { background-color: #3c3c3c; }
+        
+        input[type="text"] {
+            padding:7px 10px; 
+            margin-bottom:8px; 
+            border:1px solid var(--input-border-color);
+            font-size:0.9em; background-color:var(--input-bg-color); 
+            color:var(--input-text-color); border-radius:3px;
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        input[type="text"]::placeholder { color: var(--placeholder-color); }
+        
+        #applyFilterButton, #resetFilterButton {
+            padding: 8px 15px; 
+            font-size: 0.9em;
+            background-color: var(--button-main-bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--input-border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.25);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            margin-right: 8px; margin-bottom: 8px;
+        }
+        #applyFilterButton:hover, #resetFilterButton:hover {
+            background-color: var(--button-main-hover-bg-color);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.35);
+        }
+        
+        label {font-weight:bold; display:block; margin-bottom:4px; font-size:0.95em;}
+        .status-message {
+            margin-bottom:1.5em; padding:10px; 
+            border:1px solid var(--table-border-color); 
+            background-color:var(--input-bg-color); 
+            color: var(--text-color); 
+            border-radius:3px;
+        }
+
+        .filter-section {margin-bottom:1.5em; padding:15px; border:1px solid var(--table-border-color); background-color:var(--header-bg-color); border-radius:4px;}
+        .filter-group {margin-bottom:12px; position:relative;} 
+        
+        .active-inline-bubbles { 
+            display: flex; 
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px; 
+            width: 100%; 
+        }
+
+        a {color:var(--link-color); text-decoration:none;}
+        a:hover {color:var(--link-hover-color); text-decoration:underline;}
+        .footer {margin-top:3em; font-size:0.85em; text-align:center; color:#aaa;}
+        .sort-indicator {font-size:0.8em; margin-left:4px;}
+        .hidden {display:none !important;}
+        
+        .suggestion-bubbles {
+            position: absolute; z-index: 10;
+            background-color:var(--input-bg-color); border:1px solid var(--input-border-color);
+            padding:8px; 
+            margin-top: 2px; 
+            max-height:150px; overflow-y:auto; 
+            border-radius:3px; box-shadow:0 3px 6px rgba(0,0,0,0.3); 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        .suggestion-bubble-item {
+            display: inline-flex; align-items: center; 
+            padding: 6px 10px; 
+            font-size:0.85em;
+            border:1px solid var(--bubble-border-color); color:var(--text-color);
+            border-radius:12px; margin-right:6px; margin-bottom:6px; cursor:pointer;
+            white-space:nowrap; transition:background-color 0.2s;
+            background-color:var(--bubble-bg-color);
+        }
+        .suggestion-bubble-item:hover { background-color:var(--bubble-hover-bg-color); }
+        
+        .active-filter-bubble {
+            display: inline-flex; align-items: center; padding: 4px 8px; font-size:0.85em;
+            border:1px solid var(--bubble-border-color); color:var(--text-color);
+            border-radius:12px; margin-right:6px; margin-bottom:6px; cursor:pointer;
+            white-space:nowrap; transition:background-color 0.2s;
+            background-color:var(--active-bubble-bg-color);
+        }
+        .active-filter-bubble:hover { background-color:var(--bubble-hover-bg-color); }
+
+        .action-icon { margin-left:6px; font-weight:bold; color: var(--action-icon-color); }
+        .action-icon.add { color: #6fcf97; }
+        .action-icon.remove { color: #eb5757; }
+
+        .profile-link {font-size:1.1em; margin-bottom:1.5em;}
+        .done-toggle {cursor:pointer; font-size:1.2em; user-select:none;}
+        .done-toggle.is-done {color:var(--done-indicator-color);}
+        tr.is-done-row td {background-color:var(--row-done-bg-color); color:#aaa;}
+        tr.is-done-row a {color:var(--link-color); opacity:0.7;}
+        .cell-bubbles-container .cell-bubble {
+            display:inline-block; padding:2px 6px; font-size:0.8em; background-color:var(--bubble-bg-color);
+            border:1px solid var(--bubble-border-color); color:var(--text-color); border-radius:10px;
+            margin-right:4px; margin-bottom:4px;
+        }
+        .cell-bubbles-container .toggle-bubbles-btn {
+            font-size:0.8em; color:var(--link-color); cursor:pointer; margin-left:5px;
+            background:none; border:none; padding:0; text-decoration:underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>LeetCode Questions: Enhanced List</h1>
+    <p class="profile-link">By: <a href="https://github.com/nikhilm25" target="_blank" rel="noopener noreferrer">@nikhilm25 on GitHub</a></p>
+    <div id="statusMessage" class="status-message">Loading question data...</div>
+
+    <div id="controlsAndTable" class="hidden">
+        <div class="filter-section">
+            <h3>Filter Questions</h3>
+            <div class="filter-group" id="difficultyFilterGroup">
+                <label for="difficultyFilter">Difficulty:</label>
+                <input type="text" id="difficultyFilter" placeholder="Easy, Medium, Hard">
+                <div id="activeDifficultyFilters" class="active-inline-bubbles"></div>
+                <div id="difficultySuggestions" class="suggestion-bubbles hidden"></div>
+            </div>
+            <div class="filter-group" id="questionFilterGroup">
+                <label for="questionFilter">Question Title:</label>
+                <input type="text" id="questionFilter" placeholder="Keywords...">
+            </div>
+            <div class="filter-group" id="companiesFilterGroup">
+                <label for="companiesFilter">Companies:</label>
+                <input type="text" id="companiesFilter" placeholder="Type to find companies...">
+                <div id="activeCompanyFilters" class="active-inline-bubbles"></div>
+                <div id="companiesSuggestions" class="suggestion-bubbles hidden"></div>
+            </div>
+            <div class="filter-group" id="topicsFilterGroup">
+                <label for="topicsFilter">Topics:</label>
+                 <input type="text" id="topicsFilter" placeholder="Type to find topics...">
+                 <div id="activeTopicFilters" class="active-inline-bubbles"></div>
+                <div id="topicsSuggestions" class="suggestion-bubbles hidden"></div>
+            </div>
+            <button id="applyFilterButton">Apply Filters</button>
+            <button id="resetFilterButton">Reset Filters</button>
+        </div>
+
+        <table>
+             <thead>
+                <tr>
+                    <th style="width:30px;">Done</th>
+                    <th data-sortkey="Difficulty">Difficulty <span class="sort-indicator"></span></th>
+                    <th data-sortkey="Question">Question <span class="sort-indicator"></span></th>
+                    <th data-sortkey="Frequency (Number of Companies)">Freq. <span class="sort-indicator"></span></th>
+                    <th data-sortkey="Link of Question">Link</th>
+                    <th data-sortkey="Companies Asking This Question" style="min-width:150px;">Companies <span class="sort-indicator"></span></th>
+                    <th data-sortkey="Topics" style="min-width:150px;">Topics <span class="sort-indicator"></span></th>
+                </tr>
+            </thead>
+            <tbody id="questionsTableBody"></tbody>
+        </table>
+        <p id="noResults" class="hidden" style="text-align:center; margin-top:1em;">No questions match your criteria.</p>
+    </div>
+    <div class="footer">
+        <p>&copy; <span id="currentYear"></span> nikhilm25. Max focus, min fluff.</p>
+    </div>
+
+    <script>
+        const JSON_DATA_FILE = 'questions_data.json';
+        const CACHE_KEY_DATA = 'leetcodeEnhancedData';
+        const CACHE_KEY_DONE = 'leetcodeEnhancedDone';
+        const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; 
+
+        const COL_DIFFICULTY = 'Difficulty'; const COL_QUESTION = 'Question';
+        const COL_FREQUENCY = 'Frequency (Number of Companies)'; const COL_LINK = 'Link of Question';
+        const COL_COMPANIES = 'Companies Asking This Question'; const COL_TOPICS = 'Topics';
+
+        let allQuestionsData = []; let doneQuestions = new Set();
+        let currentSortKey = COL_FREQUENCY; let currentSortDirection = 'desc';
+        let filteredQuestions = [];
+        const difficultyOrder = { 'Easy': 1, 'Medium': 2, 'Hard': 3 };
+        const validDifficulties = ['Easy', 'Medium', 'Hard'];
+        let activeFilters = { Difficulties: [], Company: [], Topic: [] };
+
+        const statusMessageEl = document.getElementById('statusMessage');
+        const controlsAndTableEl = document.getElementById('controlsAndTable');
+        const tableBody = document.getElementById('questionsTableBody');
+        const difficultyFilterEl = document.getElementById('difficultyFilter');
+        const questionFilterEl = document.getElementById('questionFilter');
+        const companiesFilterEl = document.getElementById('companiesFilter');
+        const topicsFilterEl = document.getElementById('topicsFilter');
+        
+        const difficultySuggestionsEl = document.getElementById('difficultySuggestions');
+        const companiesSuggestionsEl = document.getElementById('companiesSuggestions');
+        const topicsSuggestionsEl = document.getElementById('topicsSuggestions');
+        
+        const activeDifficultyFiltersEl = document.getElementById('activeDifficultyFilters');
+        const activeCompanyFiltersEl = document.getElementById('activeCompanyFilters');
+        const activeTopicFiltersEl = document.getElementById('activeTopicFilters');
+        
+        const applyFilterButton = document.getElementById('applyFilterButton');
+        const resetFilterButton = document.getElementById('resetFilterButton');
+        const noResultsEl = document.getElementById('noResults');
+
+        function getCachedData(key) { 
+            const itemStr = localStorage.getItem(key); if (!itemStr) return null;
+            const item = JSON.parse(itemStr);
+            if (key === CACHE_KEY_DATA && Date.now() > item.timestamp + CACHE_EXPIRY_MS) {
+                localStorage.removeItem(key); return null;
+            }
+            return item.data;
+        }
+        function setCachedData(key, data) { 
+            const item = { data: data, timestamp: Date.now() };
+            try { localStorage.setItem(key, JSON.stringify(item));}
+            catch (e) { console.error("Error saving to localStorage", e); }
+        }
+        function loadDoneQuestions() { 
+            const done = getCachedData(CACHE_KEY_DONE) || []; doneQuestions = new Set(done);
+         }
+        function saveDoneQuestions() { 
+            setCachedData(CACHE_KEY_DONE, Array.from(doneQuestions));
+        }
+        function toggleDoneStatus(questionLink, rowElement) { 
+            if (doneQuestions.has(questionLink)) { doneQuestions.delete(questionLink); }
+            else { doneQuestions.add(questionLink); }
+            saveDoneQuestions();
+            rowElement.classList.toggle('is-done-row', doneQuestions.has(questionLink));
+            const toggleSpan = rowElement.querySelector('.done-toggle');
+            if (toggleSpan) {
+                 toggleSpan.textContent = doneQuestions.has(questionLink) ? '✔' : '◻';
+                 toggleSpan.classList.toggle('is-done', doneQuestions.has(questionLink));
+            }
+        }
+
+        function createSuggestionBubble(text, type) {
+            const bubbleItem = document.createElement('div'); 
+            bubbleItem.className = 'suggestion-bubble-item';
+            
+            const textSpan = document.createElement('span'); 
+            textSpan.textContent = text;
+            const addIcon = document.createElement('span'); 
+            addIcon.className = 'action-icon add'; 
+            addIcon.textContent = ' +';
+            
+            bubbleItem.appendChild(textSpan); 
+            bubbleItem.appendChild(addIcon);
+
+            bubbleItem.addEventListener('mousedown', (e) => {
+                e.preventDefault(); 
+                let filterChanged = false;
+                let associatedInputEl; 
+                let suggestionContainer; 
+
+                if (type === 'Difficulty') {
+                    associatedInputEl = difficultyFilterEl;
+                    suggestionContainer = difficultySuggestionsEl;
+                    const normalizedValue = text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+                    if (validDifficulties.includes(normalizedValue) && !activeFilters.Difficulties.includes(normalizedValue)) {
+                        activeFilters.Difficulties.push(normalizedValue);
+                        filterChanged = true;
+                    }
+                } else { 
+                    associatedInputEl = (type === 'Company') ? companiesFilterEl : topicsFilterEl;
+                    suggestionContainer = (type === 'Company') ? companiesSuggestionsEl : topicsSuggestionsEl;
+                    let currentFilterArray = (type === 'Company') ? activeFilters.Company : activeFilters.Topic;
+                    const valueToAdd = (type === 'Company') ? text.toUpperCase() : text;
+                    if (!currentFilterArray.includes(valueToAdd)) {
+                        currentFilterArray.push(valueToAdd);
+                        filterChanged = true;
+                    }
+                }
+                
+                if (associatedInputEl) associatedInputEl.value = '';
+
+                if (filterChanged) {
+                    renderActiveInlineBubbles(); 
+                    applyFilters(); 
+                }
+
+                if (type === 'Difficulty') {
+                    if (suggestionContainer) {
+                        suggestionContainer.classList.add('hidden');
+                    }
+                } else { 
+                    if (suggestionContainer && associatedInputEl) {
+                        updateSuggestionBubbleVisibility(associatedInputEl, suggestionContainer, ''); 
+                        associatedInputEl.focus(); 
+                    }
+                }
+            });
+            return bubbleItem;
+        }
+
+        function populateSuggestionBubbles(data) { 
+            const uniqueDifficulties = validDifficulties;
+            const uniqueCompanies = [...new Set(data.flatMap(q => (q[COL_COMPANIES] || '').split(',').map(c => c.trim()).filter(Boolean)))].sort();
+            const uniqueTopics = [...new Set(data.flatMap(q => (q[COL_TOPICS] || '').split(',').map(t => t.trim()).filter(Boolean)))].sort();
+            
+            difficultySuggestionsEl.innerHTML = '';
+            uniqueDifficulties.forEach(d => difficultySuggestionsEl.appendChild(createSuggestionBubble(d, 'Difficulty')));
+            
+            companiesSuggestionsEl.innerHTML = '';
+            uniqueCompanies.forEach(c => companiesSuggestionsEl.appendChild(createSuggestionBubble(c, 'Company')));
+            
+            topicsSuggestionsEl.innerHTML = '';
+            uniqueTopics.forEach(t => topicsSuggestionsEl.appendChild(createSuggestionBubble(t, 'Topic')));
+        }
+        
+        function updateSuggestionBubbleVisibility(inputEl, bubbleContainer, filterText) {
+            const bubbles = bubbleContainer.querySelectorAll('.suggestion-bubble-item');
+            const text = filterText.toLowerCase().trim();
+            let visibleSuggestionCount = 0;
+
+            let activeFilterArray;
+            let type; 
+
+            if (bubbleContainer === difficultySuggestionsEl) {
+                activeFilterArray = activeFilters.Difficulties;
+                type = 'Difficulty';
+            } else if (bubbleContainer === companiesSuggestionsEl) {
+                activeFilterArray = activeFilters.Company;
+                type = 'Company';
+            } else if (bubbleContainer === topicsSuggestionsEl) {
+                activeFilterArray = activeFilters.Topic;
+                type = 'Topic';
+            }
+
+            bubbles.forEach(bubble => {
+                const bubbleTextSpan = bubble.querySelector('span:first-child');
+                if (!bubbleTextSpan) return;
+                const originalBubbleText = bubbleTextSpan.textContent;
+                const lowerBubbleText = originalBubbleText.toLowerCase();
+
+                let isAlreadyActive = false;
+                if (activeFilterArray) {
+                    const comparableActiveText = (type === 'Company') ? originalBubbleText.toUpperCase() : originalBubbleText;
+                    isAlreadyActive = activeFilterArray.includes(comparableActiveText);
+                }
+
+                if (isAlreadyActive) {
+                    bubble.classList.add('hidden');
+                } else {
+                    if (text === '' || lowerBubbleText.includes(text)) { 
+                        bubble.classList.remove('hidden');
+                        visibleSuggestionCount++;
+                    } else {
+                        bubble.classList.add('hidden');
+                    }
+                }
+            });
+
+            if (document.activeElement === inputEl && visibleSuggestionCount > 0) {
+                bubbleContainer.classList.remove('hidden');
+            } else {
+                bubbleContainer.classList.add('hidden');
+            }
+        }
+
+
+        function handleInputFocus(inputEl, bubbleContainer) { 
+            [difficultySuggestionsEl, companiesSuggestionsEl, topicsSuggestionsEl].forEach(s => {
+                if (s !== bubbleContainer) s.classList.add('hidden');
+            });
+            updateSuggestionBubbleVisibility(inputEl, bubbleContainer, inputEl.value); 
+        }
+
+        function handleInputBlur(inputEl, bubbleContainer) { 
+            setTimeout(() => {
+                if (document.activeElement !== inputEl && 
+                    bubbleContainer && 
+                    !bubbleContainer.contains(document.activeElement) &&
+                    !inputEl.contains(document.activeElement)) { // Check if focus moved outside the component
+                    bubbleContainer.classList.add('hidden');
+                }
+            }, 150); // Small delay to allow click on suggestion to process
+        }
+        
+        function removeActiveFilter(type, valueToRemove) { 
+            let filterChanged = false;
+            if (type === "Difficulty") {
+                const initialLength = activeFilters.Difficulties.length;
+                activeFilters.Difficulties = activeFilters.Difficulties.filter(d => d !== valueToRemove);
+                if (activeFilters.Difficulties.length !== initialLength) filterChanged = true;
+            } else if (type === "Company") {
+                const initialLength = activeFilters.Company.length;
+                activeFilters.Company = activeFilters.Company.filter(v => v !== valueToRemove);
+                if (activeFilters.Company.length !== initialLength) filterChanged = true;
+            } else if (type === "Topic") {
+                const initialLength = activeFilters.Topic.length;
+                activeFilters.Topic = activeFilters.Topic.filter(v => v !== valueToRemove);
+                if (activeFilters.Topic.length !== initialLength) filterChanged = true;
+            }
+            renderActiveInlineBubbles(); 
+            if (filterChanged) {
+                applyFilters();
+                if (type === 'Difficulty') updateSuggestionBubbleVisibility(difficultyFilterEl, difficultySuggestionsEl, difficultyFilterEl.value);
+                else if (type === 'Company') updateSuggestionBubbleVisibility(companiesFilterEl, companiesSuggestionsEl, companiesFilterEl.value);
+                else if (type === 'Topic') updateSuggestionBubbleVisibility(topicsFilterEl, topicsSuggestionsEl, topicsFilterEl.value);
+            }
+        }
+
+        function renderActiveInlineBubbles() { 
+            activeDifficultyFiltersEl.innerHTML = '';
+            activeFilters.Difficulties.forEach(val => activeDifficultyFiltersEl.appendChild(createActiveBubbleDOM("Difficulty", val)));
+
+            activeCompanyFiltersEl.innerHTML = '';
+            activeFilters.Company.forEach(val => activeCompanyFiltersEl.appendChild(createActiveBubbleDOM("Company", val)));
+            
+            activeTopicFiltersEl.innerHTML = '';
+            activeFilters.Topic.forEach(val => activeTopicFiltersEl.appendChild(createActiveBubbleDOM("Topic", val)));
+        }
+        function createActiveBubbleDOM(type, value) { 
+            const bubble = document.createElement('span'); 
+            bubble.className = 'active-filter-bubble';
+            bubble.textContent = value;
+            bubble.style.cursor = 'pointer';
+
+            const removeIconVisual = document.createElement('span'); 
+            removeIconVisual.className = 'action-icon remove';
+            removeIconVisual.textContent = ' -';
+            bubble.appendChild(removeIconVisual);
+
+            bubble.onclick = (e) => { 
+                e.stopPropagation(); 
+                removeActiveFilter(type, value); 
+            };
+            return bubble;
+        }
+        async function loadQuestionData() { 
+            statusMessageEl.textContent = 'Loading question data...';
+            statusMessageEl.style.backgroundColor = 'var(--input-bg-color)';
+            statusMessageEl.style.color = 'var(--text-color)';
+
+            loadDoneQuestions();
+            let cached = getCachedData(CACHE_KEY_DATA);
+            if (cached) {
+                allQuestionsData = cached; 
+                statusMessageEl.textContent = `Loaded ${allQuestionsData.length} questions from cache.`;
+                statusMessageEl.style.backgroundColor = 'var(--status-bg-success)';
+                setTimeout(() => { statusMessageEl.classList.add('hidden'); }, 2500);
+            } else {
+                try {
+                    const response = await fetch(JSON_DATA_FILE);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    let rawData = await response.json();
+                    allQuestionsData = rawData.map(q => {
+                        if (q[COL_COMPANIES]) q[COL_COMPANIES] = q[COL_COMPANIES].toUpperCase(); return q;
+                    });
+                    setCachedData(CACHE_KEY_DATA, allQuestionsData);
+                    statusMessageEl.textContent = `Successfully loaded and cached ${allQuestionsData.length} questions.`;
+                    statusMessageEl.style.backgroundColor = 'var(--status-bg-success)';
+                    setTimeout(() => { statusMessageEl.classList.add('hidden'); }, 2500);
+                } catch (error) {
+                    console.error("Error loading question data:", error);
+                    statusMessageEl.textContent = `Error: ${error.message}. Could not load data.`;
+                    statusMessageEl.style.backgroundColor = 'var(--status-bg-error)';
+                    controlsAndTableEl.classList.add('hidden'); return;
+                }
+            }
+            filteredQuestions = [...allQuestionsData];
+            controlsAndTableEl.classList.remove('hidden');
+            populateSuggestionBubbles(allQuestionsData); 
+            renderActiveInlineBubbles(); 
+            sortAndRender();
+        }
+        function renderCellBubbles(cell, textContent, itemType) { 
+            cell.innerHTML = ''; if (!textContent) return;
+            const items = textContent.split(',').map(item => item.trim()).filter(Boolean);
+            const container = document.createElement('div'); container.className = 'cell-bubbles-container';
+            const maxInitialBubbles = 3;
+            items.forEach((item, index) => {
+                const bubble = document.createElement('span'); bubble.className = 'cell-bubble';
+                bubble.textContent = item; if (index >= maxInitialBubbles) bubble.classList.add('hidden');
+                container.appendChild(bubble);
+            });
+            if (items.length > maxInitialBubbles) {
+                const toggleBtn = document.createElement('button'); toggleBtn.className = 'toggle-bubbles-btn';
+                toggleBtn.textContent = `Show All (${items.length})`;
+                toggleBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    const isShowingAll = container.querySelectorAll('.cell-bubble.hidden').length === 0;
+                    container.querySelectorAll('.cell-bubble').forEach((b, idx) => {
+                        if (idx >= maxInitialBubbles) b.classList.toggle('hidden', isShowingAll); 
+                    });
+                    toggleBtn.textContent = isShowingAll ? `Show All (${items.length})` : `Show Less`;
+                };
+                container.appendChild(toggleBtn);
+            }
+            cell.appendChild(container);
+        }
+        function renderTable(dataToRender) { 
+            tableBody.innerHTML = '';
+            noResultsEl.classList.toggle('hidden', !(dataToRender.length === 0 && allQuestionsData.length > 0));
+            dataToRender.forEach(q => {
+                const row = tableBody.insertRow(); const questionLink = q[COL_LINK];
+                row.classList.toggle('is-done-row', doneQuestions.has(questionLink));
+                const doneCell = row.insertCell(); const doneToggle = document.createElement('span');
+                doneToggle.className = 'done-toggle';
+                doneToggle.textContent = doneQuestions.has(questionLink) ? '✔' : '◻';
+                doneToggle.classList.toggle('is-done', doneQuestions.has(questionLink));
+                doneToggle.onclick = () => toggleDoneStatus(questionLink, row);
+                doneCell.appendChild(doneToggle);
+                row.insertCell().textContent = q[COL_DIFFICULTY] || '';
+                row.insertCell().textContent = q[COL_QUESTION] || '';
+                row.insertCell().textContent = q[COL_FREQUENCY] !== undefined ? q[COL_FREQUENCY].toString() : '';
+                const linkCell = row.insertCell();
+                if (questionLink) {
+                    const link = document.createElement('a'); link.href = questionLink; link.textContent = "Link"; link.target = "_blank";
+                    linkCell.appendChild(link);
+                }
+                renderCellBubbles(row.insertCell(), q[COL_COMPANIES], 'Company');
+                renderCellBubbles(row.insertCell(), q[COL_TOPICS], 'Topic');
+            });
+        }
+
+        function applyFilters() {
+            filteredQuestions = allQuestionsData.filter(q => {
+                const questionDifficulty = q[COL_DIFFICULTY]; 
+                const c = (q[COL_COMPANIES] || ''); 
+                const t = (q[COL_TOPICS] || '').toLowerCase();
+                const questionVal = questionFilterEl.value.trim().toLowerCase();
+
+                const diffMatch = activeFilters.Difficulties.length === 0 || 
+                                  activeFilters.Difficulties.includes(questionDifficulty);
+                const companyMatch = activeFilters.Company.length === 0 || 
+                                   activeFilters.Company.some(cf => c.includes(cf));
+                const topicMatch = activeFilters.Topic.length === 0 || 
+                                 activeFilters.Topic.some(tf => t.includes(tf.toLowerCase()));
+                const questionMatch = !questionVal || (q[COL_QUESTION] || '').toLowerCase().includes(questionVal);
+                
+                return diffMatch && companyMatch && topicMatch && questionMatch;
+            });
+            sortAndRender();
+        }
+
+        function resetFilters() { 
+            let changed = activeFilters.Difficulties.length > 0 || activeFilters.Company.length > 0 || activeFilters.Topic.length > 0;
+            activeFilters = { Difficulties: [], Company: [], Topic: [] };
+            
+            difficultyFilterEl.value = ''; questionFilterEl.value = '';
+            companiesFilterEl.value = ''; topicsFilterEl.value = '';
+            
+            [difficultySuggestionsEl, companiesSuggestionsEl, topicsSuggestionsEl].forEach(el => {
+                if (el) el.classList.add('hidden');
+            });
+            
+            renderActiveInlineBubbles(); 
+            
+            if (changed || filteredQuestions.length !== allQuestionsData.length) {
+                 filteredQuestions = [...allQuestionsData]; 
+                 applyFilters(); 
+            } else {
+                 sortAndRender(); 
+            }
+        }
+        function updateSortIndicators() { 
+             document.querySelectorAll('th[data-sortkey]').forEach(th => {
+                const indicator = th.querySelector('.sort-indicator'); if(!indicator) return;
+                indicator.textContent = (th.dataset.sortkey === currentSortKey) ? (currentSortDirection === 'asc' ? '↑' : '↓') : '';
+            });
+        }
+        function sortAndRender() { 
+            if (!allQuestionsData || allQuestionsData.length === 0) { renderTable([]); updateSortIndicators(); return; }
+            const dataToSort = filteredQuestions; 
+            dataToSort.sort((a, b) => {
+                let valA = a[currentSortKey], valB = b[currentSortKey];
+                if (currentSortKey === COL_DIFFICULTY) {
+                    valA = difficultyOrder[valA] || 99; valB = difficultyOrder[valB] || 99;
+                } else if (currentSortKey === COL_FREQUENCY) {
+                    valA = parseInt(valA) || 0; valB = parseInt(valB) || 0;
+                } else {
+                    valA = (valA || '').toString().toLowerCase(); valB = (valB || '').toString().toLowerCase();
+                     if (currentSortKey === COL_COMPANIES) { 
+                         valA = (a[currentSortKey] || '').toString(); valB = (b[currentSortKey] || '').toString();
+                     }
+                }
+                if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSortDirection === 'asc' ? 1 : -1;
+                const qA = (a[COL_QUESTION] || '').toLowerCase(), qB = (b[COL_QUESTION] || '').toLowerCase();
+                return qA < qB ? -1 : (qA > qB ? 1 : 0);
+            });
+            updateSortIndicators(); renderTable(dataToSort);
+        }
+
+        applyFilterButton.addEventListener('click', applyFilters);
+        resetFilterButton.addEventListener('click', resetFilters);
+        questionFilterEl.addEventListener('input', applyFilters);
+
+        [difficultyFilterEl, companiesFilterEl, topicsFilterEl].forEach(inputEl => {
+            let suggestionContainer;
+            let inputType; 
+
+            if (inputEl === difficultyFilterEl) {
+                suggestionContainer = difficultySuggestionsEl;
+                inputType = 'Difficulty';
+            } else if (inputEl === companiesFilterEl) {
+                suggestionContainer = companiesSuggestionsEl;
+                inputType = 'Company';
+            } else if (inputEl === topicsFilterEl) {
+                suggestionContainer = topicsSuggestionsEl;
+                inputType = 'Topic';
+            }
+
+            if (suggestionContainer) {
+                inputEl.addEventListener('input', (e) => updateSuggestionBubbleVisibility(inputEl, suggestionContainer, e.target.value));
+                inputEl.addEventListener('focus', () => handleInputFocus(inputEl, suggestionContainer));
+                inputEl.addEventListener('blur', () => handleInputBlur(inputEl, suggestionContainer));
+                
+                inputEl.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const visibleSuggestions = Array.from(suggestionContainer.querySelectorAll('.suggestion-bubble-item:not(.hidden)'));
+                        if (visibleSuggestions.length > 0) {
+                            const topSuggestionText = visibleSuggestions[0].querySelector('span:first-child').textContent;
+                            let filterChanged = false;
+
+                            if (inputType === 'Difficulty') {
+                                const normalizedValue = topSuggestionText.charAt(0).toUpperCase() + topSuggestionText.slice(1).toLowerCase();
+                                if (validDifficulties.includes(normalizedValue) && !activeFilters.Difficulties.includes(normalizedValue)) {
+                                    activeFilters.Difficulties.push(normalizedValue);
+                                    filterChanged = true;
+                                }
+                                suggestionContainer.classList.add('hidden'); 
+                            } else { 
+                                const valueToAdd = (inputType === 'Company') ? topSuggestionText.toUpperCase() : topSuggestionText;
+                                let currentFilterArray = (inputType === 'Company') ? activeFilters.Company : activeFilters.Topic;
+                                if (!currentFilterArray.includes(valueToAdd)) {
+                                    currentFilterArray.push(valueToAdd);
+                                    filterChanged = true;
+                                }
+                                updateSuggestionBubbleVisibility(inputEl, suggestionContainer, ''); 
+                                inputEl.focus(); 
+                            }
+                            inputEl.value = ''; 
+                            if (filterChanged) {
+                                renderActiveInlineBubbles();
+                                applyFilters();
+                            }
+                        } else { 
+                           inputEl.value = ''; 
+                           if (inputType === 'Difficulty') suggestionContainer.classList.add('hidden');
+                        }
+                    }
+                });
+                
+                inputEl.addEventListener('change', () => { 
+                    const typedValue = inputEl.value.trim();
+                    let filterChanged = false;
+                    // Process 'change' only if it's a genuine blur with content, not after Enter key handling
+                    if (typedValue && document.activeElement !== inputEl) { 
+                        if (inputType === 'Difficulty') {
+                            const normalized = typedValue.charAt(0).toUpperCase() + typedValue.slice(1).toLowerCase();
+                            if (validDifficulties.includes(normalized) && !activeFilters.Difficulties.includes(normalized)) {
+                                activeFilters.Difficulties.push(normalized);
+                                filterChanged = true;
+                            }
+                        } else if (inputType === 'Company') {
+                            const upperTypedValue = typedValue.toUpperCase();
+                            if (!activeFilters.Company.includes(upperTypedValue)) { 
+                                activeFilters.Company.push(upperTypedValue);
+                                filterChanged = true;
+                            }
+                        } else if (inputType === 'Topic') {
+                             if (!activeFilters.Topic.includes(typedValue)) { 
+                                activeFilters.Topic.push(typedValue);
+                                filterChanged = true;
+                            }
+                        }
+                        if (filterChanged) {
+                             inputEl.value = ''; 
+                        }
+                    }
+
+                    if (filterChanged) {
+                        renderActiveInlineBubbles();
+                        applyFilters();
+                    }
+                    if (inputType === 'Difficulty' && suggestionContainer && document.activeElement !== inputEl) {
+                         suggestionContainer.classList.add('hidden');
+                    }
+                });
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            const filterGroupIds = ['difficultyFilterGroup', 'companiesFilterGroup', 'topicsFilterGroup'];
+            let clickedInsideAFilterGroup = false;
+
+            for (const id of filterGroupIds) {
+                const group = document.getElementById(id);
+                if (group && group.contains(event.target)) {
+                    clickedInsideAFilterGroup = true;
+                    break;
+                }
+            }
+
+            if (!clickedInsideAFilterGroup) {
+                difficultySuggestionsEl.classList.add('hidden');
+                companiesSuggestionsEl.classList.add('hidden');
+                topicsSuggestionsEl.classList.add('hidden');
+            }
+        });
+
+
+        document.querySelectorAll('th[data-sortkey]').forEach(th => { 
+            th.addEventListener('click', () => {
+                if (allQuestionsData.length === 0) return;
+                const sortKey = th.dataset.sortkey;
+                if (currentSortKey === sortKey) { currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc'; }
+                else { currentSortKey = sortKey; currentSortDirection = (sortKey === COL_FREQUENCY || sortKey === COL_DIFFICULTY) ? 'desc' : 'asc';}
+                sortAndRender();
+            });
+        });
+        document.addEventListener('DOMContentLoaded', () => { 
+            document.getElementById('currentYear').textContent = new Date().getFullYear(); loadQuestionData();
+        });
+    </script>
+</body>
+</html>
