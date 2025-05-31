@@ -3,255 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Enhanced LeetCode Questions Tracker - Filter and track your coding interview preparation progress">
-    <meta name="keywords" content="leetcode, coding interview, algorithm practice, data structures">
-    <meta name="author" content="nikhilm25">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://github.com/nikhilm25/RelevantLeetcode">
-    <meta property="og:title" content="LeetCode Questions - Enhanced Tracker">
-    <meta property="og:description" content="Track your LeetCode progress with advanced filtering and company-specific questions">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://github.com/nikhilm25/RelevantLeetcode">
-    <meta property="twitter:title" content="LeetCode Questions - Enhanced Tracker">
-    <meta property="twitter:description" content="Track your LeetCode progress with advanced filtering and company-specific questions">
-    
-    <title>LeetCode Questions - Enhanced Tracker</title>
+    <title>Relevant LeetCode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1c1c1e">
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="questions_data.json" as="fetch" crossorigin>
 </head>
 <body>
-    <!-- Skip to content for accessibility -->
-    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
+    <div class="bg-animation"></div>
     
-    <header role="banner">
-        <h1>LeetCode Questions: Enhanced Tracker</h1>
-        <p class="profile-link">
-            By: <a href="https://github.com/nikhilm25" target="_blank" rel="noopener noreferrer" aria-label="Visit nikhilm25's GitHub profile">@nikhilm25 on GitHub</a>
-        </p>
-        <p class="latest-update">Updated: <time datetime="2024-05-11">May 11th, 2024</time></p>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="brand">
+                <h1>Relevant LeetCode</h1>
+                <div class="brand-subtitle">Most Asked Questions by Companies</div>
+            </div>
+            <div class="header-links">
+                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="header-link youtube">
+                    <i class="fab fa-youtube"></i>
+                    <span>Tutorial</span>
+                </a>
+                <a href="https://github.com/nikhilm25" target="_blank" class="header-link">
+                    <i class="fab fa-github"></i>
+                    <span>@nikhilm25</span>
+                </a>
+                <a href="https://github.com/nikhilm25/RelevantLeetcode" target="_blank" class="header-link primary">
+                    <i class="fas fa-code-branch"></i>
+                    <span>Contribute</span>
+                </a>
+            </div>
+        </div>
     </header>
 
-    <main id="main-content" role="main">
-        <!-- Loading State -->
-        <div id="loadingState" class="loading-state" aria-live="polite">
-            <div class="loading-spinner" aria-hidden="true"></div>
-            <p>Loading question data...</p>
-            <div class="loading-skeleton">
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
-            </div>
-        </div>
-
-        <!-- Error State -->
-        <div id="errorState" class="error-state hidden" role="alert">
-            <h2>Oops! Something went wrong</h2>
-            <p id="errorMessage">Failed to load question data. Please try again.</p>
-            <button id="retryButton" class="btn btn-primary">
-                <span aria-hidden="true">🔄</span> Retry
-            </button>
-        </div>
-
-        <!-- Main Application -->
-        <div id="appContainer" class="hidden">
-            <!-- Progress Overview -->
-            <section class="progress-overview" aria-labelledby="progress-title">
-                <h2 id="progress-title">Your Progress</h2>
-                <div class="progress-stats">
-                    <div class="stat-card">
-                        <span class="stat-number" id="completedCount">0</span>
-                        <span class="stat-label">Completed</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-number" id="totalCount">0</span>
-                        <span class="stat-label">Total Questions</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-number" id="progressPercentage">0%</span>
-                        <span class="stat-label">Progress</span>
-                    </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </section>
-
-            <!-- Filters Section -->
-            <section class="filter-section" aria-labelledby="filter-title">
-                <h2 id="filter-title">Filter Questions</h2>
-                
-                <div class="filter-grid">
-                    <!-- Search Input -->
-                    <div class="filter-group">
-                        <label for="questionSearch">Search Questions:</label>
-                        <div class="search-wrapper">
-                            <input 
-                                type="search" 
-                                id="questionSearch" 
-                                placeholder="Search by question title..." 
-                                aria-describedby="search-help"
-                                autocomplete="off"
-                            >
-                            <button type="button" class="clear-search" id="clearSearch" aria-label="Clear search">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <small id="search-help" class="help-text">Search is case-insensitive and matches partial titles</small>
-                    </div>
-
-                    <!-- Difficulty Filter -->
-                    <div class="filter-group">
-                        <label for="difficultySelect">Difficulty:</label>
-                        <select id="difficultySelect" aria-describedby="difficulty-help">
-                            <option value="">All Difficulties</option>
-                            <option value="Easy">Easy</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                        </select>
-                        <small id="difficulty-help" class="help-text">Filter by problem difficulty</small>
-                    </div>
-
-                    <!-- Status Filter -->
-                    <div class="filter-group">
-                        <label for="statusSelect">Status:</label>
-                        <select id="statusSelect" aria-describedby="status-help">
-                            <option value="">All Questions</option>
-                            <option value="completed">Completed</option>
-                            <option value="pending">Not Completed</option>
-                        </select>
-                        <small id="status-help" class="help-text">Filter by completion status</small>
-                    </div>
-
-                    <!-- Company Filter -->
-                    <div class="filter-group">
-                        <label for="companySearch">Companies:</label>
-                        <div class="autocomplete-wrapper" role="combobox" aria-expanded="false" aria-haspopup="listbox">
-                            <input 
-                                type="text" 
-                                id="companySearch" 
-                                placeholder="Type to search companies..." 
-                                aria-describedby="company-help"
-                                autocomplete="off"
-                                role="searchbox"
-                            >
-                            <ul id="companySuggestions" class="suggestions-list hidden" role="listbox" aria-label="Company suggestions"></ul>
-                        </div>
-                        <div id="selectedCompanies" class="selected-filters" aria-live="polite"></div>
-                        <small id="company-help" class="help-text">Add companies to filter questions</small>
-                    </div>
-
-                    <!-- Topic Filter -->
-                    <div class="filter-group">
-                        <label for="topicSearch">Topics:</label>
-                        <div class="autocomplete-wrapper" role="combobox" aria-expanded="false" aria-haspopup="listbox">
-                            <input 
-                                type="text" 
-                                id="topicSearch" 
-                                placeholder="Type to search topics..." 
-                                aria-describedby="topic-help"
-                                autocomplete="off"
-                                role="searchbox"
-                            >
-                            <ul id="topicSuggestions" class="suggestions-list hidden" role="listbox" aria-label="Topic suggestions"></ul>
-                        </div>
-                        <div id="selectedTopics" class="selected-filters" aria-live="polite"></div>
-                        <small id="topic-help" class="help-text">Add topics to filter questions</small>
-                    </div>
-                </div>
-
-                <div class="filter-actions">
-                    <button type="button" id="clearFilters" class="btn btn-secondary">
-                        <span aria-hidden="true">🗑️</span> Clear All Filters
+    <!-- Main Content -->
+    <main class="container" id="mainContainer">
+        <!-- Search and Filter Section -->
+        <section class="search-section fade-in">
+            <div class="search-header">
+                <h2 class="search-title">Find Your Next Challenge</h2>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid">
+                        <i class="fas fa-th"></i>
                     </button>
-                    <span class="results-count" id="resultsCount" aria-live="polite">0 questions found</span>
+                    <button class="view-btn" data-view="list">
+                        <i class="fas fa-list"></i>
+                    </button>
                 </div>
-            </section>
+            </div>
 
-            <!-- Questions Table -->
-            <section class="table-section" aria-labelledby="table-title">
-                <h2 id="table-title" class="sr-only">Questions Table</h2>
-                
-                <div class="table-controls">
-                    <div class="view-options">
-                        <button type="button" id="tableView" class="view-btn active" aria-pressed="true">
-                            <span aria-hidden="true">📊</span> Table
-                        </button>
-                        <button type="button" id="cardView" class="view-btn" aria-pressed="false">
-                            <span aria-hidden="true">📋</span> Cards
-                        </button>
+            <div class="search-filters">
+                <div class="filter-group">
+                    <input type="text" class="filter-input" id="searchInput" placeholder="Search problems...">
+                </div>
+                <div class="filter-group">
+                    <select class="filter-select" id="difficultyFilter">
+                        <option value="">Difficulty</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select class="filter-select" id="completionFilter">
+                        <option value="">All Questions</option>
+                        <option value="completed">Completed</option>
+                        <option value="incomplete">Incomplete</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <button class="clear-filters-btn" id="clearFiltersBtn">
+                        <i class="fas fa-times"></i>
+                        Clear All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Bubbles Section -->
+            <div class="filter-bubbles-section">
+                <div class="filter-category">
+                    <div class="filter-category-header">
+                        <div class="filter-category-title">
+                            <div class="filter-category-icon" style="background: var(--primary-gradient); color: white; border-radius: 4px;">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <span>Companies</span>
+                            <span id="activeCompaniesCount" style="color: var(--text-secondary); font-size: 0.8rem;">(0 selected)</span>
+                        </div>
+                        <input type="text" class="filter-search" id="companySearch" placeholder="Search companies...">
                     </div>
                     
-                    <div class="sort-controls">
-                        <label for="sortSelect">Sort by:</label>
-                        <select id="sortSelect">
-                            <option value="frequency-desc">Frequency (High to Low)</option>
-                            <option value="frequency-asc">Frequency (Low to High)</option>
-                            <option value="difficulty-asc">Difficulty (Easy to Hard)</option>
-                            <option value="difficulty-desc">Difficulty (Hard to Easy)</option>
-                            <option value="title-asc">Title (A to Z)</option>
-                            <option value="title-desc">Title (Z to A)</option>
-                        </select>
+                    <div class="selected-bubbles" id="selectedCompaniesBubbles">
+                        <div class="bubbles-container"></div>
+                    </div>
+                    
+                    <div class="search-bubbles" id="searchCompaniesBubbles">
+                        <div class="bubbles-container"></div>
                     </div>
                 </div>
 
-                <!-- Table View -->
-                <div id="tableContainer" class="table-container">
-                    <table id="questionsTable" class="questions-table" role="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="status-col">
-                                    <span class="sr-only">Completion Status</span>
-                                    <span aria-hidden="true">✓</span>
-                                </th>
-                                <th scope="col">Difficulty</th>
-                                <th scope="col">Question</th>
-                                <th scope="col">Frequency</th>
-                                <th scope="col">Link</th>
-                                <th scope="col">Companies</th>
-                                <th scope="col">Topics</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
+                <div class="filter-category">
+                    <div class="filter-category-header">
+                        <div class="filter-category-title">
+                            <div class="filter-category-icon" style="background: var(--success-gradient); color: white; border-radius: 4px;">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                            <span>Topics</span>
+                            <span id="activeTopicsCount" style="color: var(--text-secondary); font-size: 0.8rem;">(0 selected)</span>
+                        </div>
+                        <input type="text" class="filter-search" id="topicSearch" placeholder="Search topics...">
+                    </div>
+                    
+                    <div class="selected-bubbles" id="selectedTopicsBubbles">
+                        <div class="bubbles-container"></div>
+                    </div>
+                    
+                    <div class="search-bubbles" id="searchTopicsBubbles">
+                        <div class="bubbles-container"></div>
+                    </div>
                 </div>
-
-                <!-- Card View -->
-                <div id="cardContainer" class="card-container hidden">
-                    <div id="cardGrid" class="card-grid"></div>
-                </div>
-
-                <!-- Virtual Scrolling for Performance -->
-                <div id="virtualScrollSentinel" class="scroll-sentinel"></div>
-            </section>
-
-            <!-- No Results State -->
-            <div id="noResults" class="no-results hidden" role="status">
-                <div class="no-results-icon" aria-hidden="true">🔍</div>
-                <h3>No questions match your filters</h3>
-                <p>Try adjusting your search criteria or clearing some filters.</p>
-                <button type="button" id="clearFiltersFromEmpty" class="btn btn-primary">Clear Filters</button>
             </div>
-        </div>
+        </section>
+
+        <!-- Problems Container -->
+        <section class="problems-container">
+            <div class="problems-header">
+                <div>
+                    <h2 class="problems-title">Problems</h2>
+                    <span class="problems-count" id="problemsCount">Loading...</span>
+                </div>
+                <div class="sort-options">
+                    <button class="sort-btn active" data-sort="frequency">
+                        <span>Frequency</span>
+                        <span class="sort-indicator">
+                            <i class="fas fa-sort-down"></i>
+                        </span>
+                    </button>
+                    <button class="sort-btn difficulty-sort" data-sort="difficulty">
+                        <span>Difficulty</span>
+                        <span class="sort-indicator">
+                            <i class="fas fa-sort-down"></i>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loadingState">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Grid View -->
+            <div class="problems-grid active" id="problemsGrid"></div>
+
+            <!-- List View -->
+            <div class="problems-list" id="problemsList">
+                <div class="list-header">
+                    <div style="text-align: center;">✓</div>
+                    <div>Problem</div>
+                    <div style="text-align: center;">Difficulty</div>
+                    <div style="text-align: center;">Freq.</div>
+                    <div>Topics</div>
+                    <div style="text-align: center;">Action</div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>No problems found</h3>
+                <p>Try adjusting your filters or search terms</p>
+            </div>
+        </section>
     </main>
 
-    <footer role="contentinfo" class="footer">
-        <p>&copy; <span id="currentYear">2024</span> nikhilm25. Built with ❤️ for coding interview prep.</p>
-        <p>
-            <a href="https://github.com/nikhilm25/RelevantLeetcode" target="_blank" rel="noopener noreferrer">View on GitHub</a> |
-            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light theme">
-                <span class="theme-icon" aria-hidden="true">🌙</span>
-            </button>
-        </p>
-    </footer>
-
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
