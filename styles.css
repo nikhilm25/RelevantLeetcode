@@ -711,3 +711,457 @@ body {
     border-radius: 4px;
 }
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Header Mobile */
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .brand h1 {
+        font-size: 1.5rem;
+    }
+
+    .brand-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .header-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .header-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+        min-width: auto;
+    }
+
+    .header-link span {
+        display: none;
+    }
+
+    .header-link i {
+        margin-right: 0;
+    }
+
+    /* Container Mobile */
+    .container {
+        padding: 0.5rem;
+        max-width: 100%;
+    }
+
+    /* Search Section Mobile */
+    .search-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .search-title {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+    .view-toggle {
+        align-self: center;
+    }
+
+    .search-filters {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .filter-input,
+    .filter-select {
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .clear-filters-btn {
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+
+    /* Filter Bubbles Mobile */
+    .filter-bubbles-section {
+        gap: 1rem;
+    }
+
+    .filter-category {
+        padding: 1rem;
+    }
+
+    .filter-category-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+    }
+
+    .filter-category-title {
+        justify-content: center;
+    }
+
+    .filter-search {
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .filter-bubble {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .selected-bubbles .bubbles-container {
+        gap: 0.5rem;
+    }
+
+    /* Problems Section Mobile */
+    .problems-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .problems-title {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+    .problems-count {
+        text-align: center;
+        margin-top: 0.25rem;
+    }
+
+    .sort-options {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .sort-btn {
+        padding: 0.75rem;
+        justify-content: center;
+    }
+
+    /* Grid View Mobile */
+    .problems-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .problem-card {
+        padding: 1rem;
+    }
+
+    .problem-title {
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+
+    .problem-meta {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .meta-item {
+        font-size: 0.85rem;
+    }
+
+    .problem-tags {
+        gap: 0.4rem;
+        margin: 0.75rem 0;
+    }
+
+    .tag {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .problem-companies {
+        margin: 0.75rem 0;
+    }
+
+    .companies-list {
+        gap: 0.4rem;
+    }
+
+    .company-tag {
+        padding: 0.25rem 0.4rem;
+        font-size: 0.7rem;
+    }
+
+    .problem-actions {
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .action-btn {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+        min-height: 44px; /* Touch-friendly size */
+    }
+
+    /* List View Mobile */
+    .list-header {
+        display: none; /* Hide header on mobile for better UX */
+    }
+
+    .problem-item {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        gap: 0.75rem;
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .problem-item > div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .list-problem-title {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Mobile-specific problem item layout */
+    .problem-item > div:first-child {
+        order: 1;
+        justify-content: flex-start;
+    }
+
+    .problem-item > div:nth-child(2) {
+        order: 2;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .problem-item > div:nth-child(3) {
+        order: 3;
+    }
+
+    .problem-item > div:nth-child(4) {
+        order: 4;
+    }
+
+    .problem-item > div:nth-child(5) {
+        order: 5;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .problem-item > div:nth-child(6) {
+        order: 6;
+        justify-content: center;
+    }
+
+    .problem-item button {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.75rem;
+    }
+
+    /* Empty State Mobile */
+    .empty-state {
+        padding: 2rem 1rem;
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        font-size: 0.9rem;
+    }
+
+    /* Loading State Mobile */
+    .loading {
+        padding: 3rem 1rem;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Small Mobile (portrait phones) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0.25rem;
+    }
+
+    .search-section,
+    .problems-container {
+        padding: 0.75rem;
+    }
+
+    .filter-category {
+        padding: 0.75rem;
+    }
+
+    .problem-card {
+        padding: 0.75rem;
+    }
+
+    .problem-title {
+        font-size: 0.95rem;
+    }
+
+    .action-btn {
+        font-size: 0.85rem;
+        padding: 0.6rem;
+    }
+
+    .meta-item {
+        font-size: 0.8rem;
+    }
+
+    .tag {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.4rem;
+    }
+
+    .company-tag {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.35rem;
+    }
+
+    /* Stack problem meta vertically on very small screens */
+    .problem-meta {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    /* Reduce font sizes for very small screens */
+    .search-title {
+        font-size: 1.1rem;
+    }
+
+    .problems-title {
+        font-size: 1.1rem;
+    }
+
+    .filter-bubble {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header-content {
+        flex-direction: row;
+        padding: 0.75rem 1rem;
+    }
+
+    .header-links {
+        justify-content: flex-end;
+    }
+
+    .search-header {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .search-title {
+        text-align: left;
+    }
+
+    .problems-header {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .problems-title {
+        text-align: left;
+    }
+
+    .sort-options {
+        flex-direction: row;
+    }
+
+    /* Two column grid in landscape on larger mobile screens */
+    .problems-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .problems-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .search-filters {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-category-header {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+/* Touch improvements for all mobile devices */
+@media (hover: none) and (pointer: coarse) {
+    .action-btn,
+    .sort-btn,
+    .view-btn,
+    .filter-bubble,
+    .clear-filters-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .complete-checkbox {
+        width: 20px;
+        height: 20px;
+        margin: 0;
+    }
+
+    /* Increase tap targets */
+    .problem-card {
+        cursor: default;
+    }
+
+    .filter-bubble {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Remove hover effects on touch devices */
+    .problem-card:hover,
+    .action-btn:hover,
+    .sort-btn:hover,
+    .view-btn:hover,
+    .filter-bubble:hover {
+        transform: none;
+        box-shadow: var(--shadow-medium);
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+    .spinner {
+        border-width: 3px;
+    }
+}
+
