@@ -14,6 +14,7 @@ let allTopics = [];
 const CACHE_KEYS = {
     COMPLETED: 'rlc_completed_v3',
     PREFERENCES: 'rlc_preferences_v3',
+    NOTES: 'rlc_notes_v1',
     FILTERS: 'rlc_filters_v3'
 };
 
@@ -64,6 +65,18 @@ function debounce(func, wait) {
         timeout = setTimeout(() => func.apply(this, args), wait);
     };
 }
+
+let notesByProblem = {}; // problemId -> array of notes
+
+function saveNotes() {
+    saveToCache(CACHE_KEYS.NOTES, notesByProblem);
+}
+
+function loadNotes() {
+    const saved = loadFromCache(CACHE_KEYS.NOTES);
+    if (saved) notesByProblem = saved;
+}
+
 
 // Data persistence
 function saveCompletedProblems() {
@@ -332,6 +345,88 @@ function renderProblems() {
     }
 }
 
+function showAddNoteModal(problemId, parentElem) {
+    // Prevent multiple modals
+    if (parentElem.querySelector('.add-note-modal')) return;
+    const modal = document.createElement('div');
+    modal.className = 'add-note-modal';
+    modal.innerHTML = `
+        <textarea class="note-input" placeholder="Type your note..." style="width:100%;min-height:60px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:0.5rem;margin-bottom:0.5rem;"></textarea>
+        <div style="display:flex;gap:0.5rem;">
+            <button class="btn-primary save-note-btn" style="flex:1;">Save</button>
+            <button class="btn-secondary cancel-note-btn" style="flex:1;">Cancel</button>
+        </div>
+    `;
+    modal.style.background = 'var(--bg-card)';
+    modal.style.border = '1px solid var(--border)';
+    modal.style.borderRadius = '8px';
+    modal.style.padding = '1rem';
+    modal.style.marginTop = '1rem';
+    modal.style.boxShadow = 'var(--shadow)';
+    parentElem.appendChild(modal);
+
+    modal.querySelector('.save-note-btn').onclick = () => {
+        const note = modal.querySelector('.note-input').value.trim();
+        if (note) {
+            if (!notesByProblem[problemId]) notesByProblem[problemId] = [];
+            notesByProblem[problemId].push({ text: note, ts: Date.now() });
+            saveNotes();
+            modal.remove();
+            // If notes section is open, refresh it
+            const notesSection = parentElem.querySelector('.notes-section');
+            if (notesSection && notesSection.style.display !== 'none') {
+                renderNotesSection(problemId, notesSection);
+            }
+        }
+    };
+    modal.querySelector('.cancel-note-btn').onclick = () => modal.remove();
+}
+
+function toggleNotesSection(problemId, parentElem, btn) {
+    const notesSection = parentElem.querySelector('.notes-section');
+    if (!notesSection) return;
+    if (notesSection.style.display === 'none') {
+        renderNotesSection(problemId, notesSection);
+        notesSection.style.display = 'block';
+        btn.innerHTML = `<i class="fas fa-eye-slash"></i> Hide Notes`;
+    } else {
+        notesSection.style.display = 'none';
+        btn.innerHTML = `<i class="fas fa-eye"></i> View Notes`;
+    }
+}
+
+function renderNotesSection(problemId, notesSection) {
+    const notes = notesByProblem[problemId] || [];
+    if (notes.length === 0) {
+        notesSection.innerHTML = `<div style="color:var(--text-secondary);font-size:0.9rem;">No notes yet.</div>`;
+        return;
+    }
+    notesSection.innerHTML = notes.map(note => `
+        <div class="note-item" style="background:var(--bg-secondary);color:var(--text-primary);border-radius:6px;padding:0.5rem;margin-bottom:0.5rem;font-size:0.95rem;">
+            <div>${note.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+            <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem;">${new Date(note.ts).toLocaleString()}</div>
+        </div>
+    `).join('');
+}
+
+function attachNoteListeners(container) {
+    container.querySelectorAll('.note-btn').forEach(btn => {
+        btn.onclick = function(e) {
+            e.stopPropagation();
+            const problemId = btn.dataset.problemId;
+            showAddNoteModal(problemId, btn.closest('.problem-card') || btn.closest('.problem-item'));
+        };
+    });
+    container.querySelectorAll('.view-notes-btn').forEach(btn => {
+        btn.onclick = function(e) {
+            e.stopPropagation();
+            const problemId = btn.dataset.problemId;
+            const parent = btn.closest('.problem-card') || btn.closest('.problem-item');
+            toggleNotesSection(problemId, parent, btn);
+        };
+    });
+}
+
 function renderGridView() {
     // Use DocumentFragment for better performance
     const fragment = document.createDocumentFragment();
@@ -384,7 +479,16 @@ function renderGridView() {
                     <i class="fas fa-${isCompleted ? 'check' : 'plus'}"></i>
                     ${isCompleted ? 'Completed' : 'Mark Done'}
                 </button>
+                <button class="action-btn btn-secondary note-btn" data-problem-id="${problem.id}">
+                    <i class="fas fa-sticky-note"></i>
+                    Add Note
+                </button>
+                <button class="action-btn btn-secondary view-notes-btn" data-problem-id="${problem.id}">
+                    <i class="fas fa-eye"></i>
+                    View Notes
+                </button>
             </div>
+            <div class="notes-section" style="display:none; margin-top:1rem;"></div>
         `;
         
         fragment.appendChild(card);
@@ -392,6 +496,7 @@ function renderGridView() {
     
     elements.problemsGrid.innerHTML = '';
     elements.problemsGrid.appendChild(fragment);
+    attachNoteListeners(elements.problemsGrid);
 }
 
 function renderListView() {
@@ -425,6 +530,10 @@ function renderListView() {
                 <button class="btn-primary" onclick="solveProblem('${problem.link}')" style="padding: 0.4rem; border-radius: 4px; border: none; cursor: pointer;">
                     <i class="fas fa-external-link-alt"></i>
                 </button>
+                <button class="btn-secondary view-notes-btn" data-problem-id="${problem.id}" style="margin-top:2px;">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <div class="notes-section" style="display:none; margin-top:0.5rem;"></div>
             </div>
         `;
         
@@ -440,6 +549,7 @@ function renderListView() {
             toggleComplete(this.dataset.problemId);
         };
     });
+    attachNoteListeners(listContainer);
 }
 
 // Actions
@@ -604,6 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCompletedProblems();
     loadFilters();
     loadPreferences();
+    loadNotes();
     loadProblemsData();
 
     // Remove dangerous button entirely
