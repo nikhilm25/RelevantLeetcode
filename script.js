@@ -2,7 +2,6 @@
 let allProblems = [];
 let filteredProblems = [];
 let completedProblems = new Set();
-let currentView = 'grid';
 let currentSort = 'numberOfCompanies';
 let sortReversed = false;
 let activeCompanies = new Set();
@@ -24,7 +23,6 @@ const elements = {
     completionFilter: document.getElementById('completionFilter'),
     problemsCount: document.getElementById('problemsCount'),
     problemsGrid: document.getElementById('problemsGrid'),
-    problemsList: document.getElementById('problemsList'),
     loadingState: document.getElementById('loadingState'),
     emptyState: document.getElementById('emptyState'),
     companySearch: document.getElementById('companySearch'),
@@ -77,7 +75,6 @@ function loadCompletedProblems() {
 
 function savePreferences() {
     const prefs = {
-        currentView,
         currentSort,
         sortReversed,
         searchTerm: elements.searchInput?.value || '',
@@ -91,7 +88,6 @@ function loadPreferences() {
     const prefs = loadFromCache(CACHE_KEYS.PREFERENCES);
     if (!prefs) return;
     
-    currentView = prefs.currentView || 'grid';
     currentSort = prefs.currentSort || 'frequency';
     sortReversed = prefs.sortReversed || false;
     
@@ -99,7 +95,6 @@ function loadPreferences() {
     if (elements.difficultyFilter) elements.difficultyFilter.value = prefs.selectedDifficulty || '';
     if (elements.completionFilter) elements.completionFilter.value = prefs.selectedCompletion || '';
     
-    updateViewToggle();
     updateSortButtons();
 }
 
@@ -120,12 +115,6 @@ function loadFilters() {
 }
 
 // UI updates
-function updateViewToggle() {
-    document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.view === currentView);
-    });
-}
-
 function updateSortButtons() {
     document.querySelectorAll('.sort-btn').forEach(btn => {
         const isActive = btn.dataset.sort === currentSort;
@@ -325,11 +314,7 @@ function renderProblems() {
 
     hideEmptyState();
     
-    if (currentView === 'grid') {
-        renderGridView();
-    } else {
-        renderListView();
-    }
+    renderGridView();
 }
 
 function renderGridView() {
@@ -394,54 +379,6 @@ function renderGridView() {
     elements.problemsGrid.appendChild(fragment);
 }
 
-function renderListView() {
-    const listContainer = elements.problemsList;
-    
-    // Clear existing items but keep header
-    const existingItems = listContainer.querySelectorAll('.problem-item');
-    existingItems.forEach(item => item.remove());
-
-    const fragment = document.createDocumentFragment();
-    
-    filteredProblems.forEach(problem => {
-        const row = document.createElement('div');
-        const isCompleted = completedProblems.has(problem.id);
-        
-        row.className = `problem-item ${isCompleted ? 'completed' : ''}`;
-        row.dataset.problemId = problem.id;
-        
-        row.innerHTML = `
-            <div style="text-align: center;">
-                <input type="checkbox" class="complete-checkbox" ${isCompleted ? 'checked' : ''} 
-                       data-problem-id="${problem.id}">
-            </div>
-            <div class="list-problem-title">${problem.title}</div>
-            <div style="text-align: center;">
-                <span class="problem-difficulty ${getDifficultyColor(problem.difficulty)}">${problem.difficulty}</span>
-            </div>
-            <div style="text-align: center;">${problem.numberOfCompanies}</div>
-            <div>${problem.topics.slice(0, 2).join(', ')}${problem.topics.length > 2 ? '...' : ''}</div>
-            <div style="text-align: center;">
-                <button class="btn-primary" onclick="solveProblem('${problem.link}')" style="padding: 0.4rem; border-radius: 4px; border: none; cursor: pointer;">
-                    <i class="fas fa-external-link-alt"></i>
-                </button>
-            </div>
-        `;
-        
-        fragment.appendChild(row);
-    });
-    
-    listContainer.appendChild(fragment);
-
-    // Add event listeners to checkboxes
-    listContainer.querySelectorAll('.complete-checkbox').forEach(checkbox => {
-        checkbox.onchange = function(e) {
-            e.stopPropagation();
-            toggleComplete(this.dataset.problemId);
-        };
-    });
-}
-
 // Actions
 function solveProblem(link) {
     if (link) window.open(link, '_blank');
@@ -481,14 +418,6 @@ function updateProblemUI(problemId, isCompleted) {
             icon.className = 'fas fa-plus';
             text.textContent = ' Mark Done';
         }
-    }
-    
-    // Update list item
-    const listItem = elements.problemsList.querySelector(`[data-problem-id="${problemId}"]`);
-    if (listItem) {
-        listItem.classList.toggle('completed', isCompleted);
-        const checkbox = listItem.querySelector('.complete-checkbox');
-        if (checkbox) checkbox.checked = isCompleted;
     }
 }
 
@@ -581,18 +510,11 @@ function getDifficultyColor(difficulty) {
 function showEmptyState() {
     elements.emptyState.style.display = 'block';
     elements.problemsGrid.style.display = 'none';
-    elements.problemsList.style.display = 'none';
 }
 
 function hideEmptyState() {
     elements.emptyState.style.display = 'none';
-    if (currentView === 'grid') {
-        elements.problemsGrid.style.display = 'grid';
-        elements.problemsList.style.display = 'none';
-    } else {
-        elements.problemsGrid.style.display = 'none';
-        elements.problemsList.style.display = 'block';
-    }
+    elements.problemsGrid.style.display = 'grid';
 }
 
 function hideLoading() {
@@ -625,17 +547,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     elements.companySearch?.addEventListener('input', debouncedCompanySearch);
     elements.topicSearch?.addEventListener('input', debouncedTopicSearch);
-
-    // View toggle
-    document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.onclick = () => {
-            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentView = btn.dataset.view;
-            savePreferences();
-            renderProblems();
-        };
-    });
 
     // Sort buttons
     document.querySelectorAll('.sort-btn').forEach(btn => {
