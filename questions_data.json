@@ -260,7 +260,7 @@
         "Question": "House Robber",
         "Frequency (Number of Companies)": 32,
         "Link of Question": "https://leetcode.com/problems/house-robber",
-        "Companies Asking This Question": "Accenture, Agoda, Airbnb, Arcesium, ByteDance, CARS24, Cisco, Citadel, Cleartrip, DE Shaw, Databricks, Datadog, EPAM Systems, Expedia, Flipkart, Goldman Sachs, Infosys, Intuit, LinkedIn, Miro, Morgan Stanley, Nordstrom, Nvidia, PayPal, PhonePe, Salesforce, ServiceNow, Sigmoid, Tesla, Turing, Walmart Labs, Zoho",
+        "Companies Asking This Question": "Accenture, Agoda, Airbnb, Arcesium, ByteDance, CARS24, Cisco, Citadel, Cleartrip, DE Shaw, Databricks, Datadog, EPAM Systems, Expedia, Flipkart, Goldman Sachs, Infosys, Intuit, LinkedIn, Miro, Morgan Stanley, Nordstrom, Nvidia, PayPal, PhonePe, Salesforce, ServiceNow, Sigmoid, Tesla, Turing, Walmart Labs, Zoho, Nike",
         "Topics": "Array, Dynamic Programming"
     },
     {
@@ -372,7 +372,7 @@
         "Question": "Reverse Linked List",
         "Frequency (Number of Companies)": 29,
         "Link of Question": "https://leetcode.com/problems/reverse-linked-list",
-        "Companies Asking This Question": "Accenture, ByteDance, Cisco, Deloitte, Deutsche Bank, Expedia, Google, J.P. Morgan, Luxoft, NetApp, Nvidia, Oracle, Ozon, PayPal, Paytm, Qualcomm, SAP, Samsung, ServiceNow, Siemens, Snap, Tesla, Visa, X, Yandex, Yelp, Zenefits, Zynga, tcs",
+        "Companies Asking This Question": "Accenture, ByteDance, Cisco, Deloitte, Deutsche Bank, Expedia, Google, J.P. Morgan, Luxoft, NetApp, Nvidia, Oracle, Ozon, PayPal, Paytm, Qualcomm, SAP, Samsung, ServiceNow, Siemens, Snap, Tesla, Visa, X, Yandex, Yelp, Zenefits, Zynga, tcs, Nike",
         "Topics": "Linked List, Recursion"
     },
     {
@@ -380,7 +380,7 @@
         "Question": "Reverse Nodes in k-Group",
         "Frequency (Number of Companies)": 29,
         "Link of Question": "https://leetcode.com/problems/reverse-nodes-in-k-group",
-        "Companies Asking This Question": "Adobe, Amazon, Apple, Arista Networks, Autodesk, Bloomberg, Capital One, Commvault, DE Shaw, Infosys, MakeMyTrip, MathWorks, Meta, Microsoft, Nutanix, PornHub, Qualcomm, Sigmoid, Snowflake, Tesla, TikTok, Uber, VMware, Visa, Walmart Labs, Yahoo, Zeta, Zomato, josh technology",
+        "Companies Asking This Question": "Adobe, Amazon, Apple, Arista Networks, Autodesk, Bloomberg, Capital One, Commvault, DE Shaw, Infosys, MakeMyTrip, MathWorks, Meta, Microsoft, Nutanix, PornHub, Qualcomm, Sigmoid, Snowflake, Tesla, TikTok, Uber, VMware, Visa, Walmart Labs, Yahoo, Zeta, Zomato, josh technology, Nike",
         "Topics": "Linked List, Recursion"
     },
     {
@@ -1308,7 +1308,7 @@
         "Question": "Binary Tree Right Side View",
         "Frequency (Number of Companies)": 10,
         "Link of Question": "https://leetcode.com/problems/binary-tree-right-side-view",
-        "Companies Asking This Question": "Accolite, Flipkart, Google, J.P. Morgan, Oracle, ServiceNow, Synopsys, Walmart Labs, Wix, Yandex",
+        "Companies Asking This Question": "Accolite, Flipkart, Google, J.P. Morgan, Oracle, ServiceNow, Synopsys, Walmart Labs, Wix, Yandex, Nike",
         "Topics": "Tree, Depth-First Search, Breadth-First Search, Binary Tree"
     },
     {
@@ -14486,5 +14486,14 @@
         "Link of Question": "https://leetcode.com/problems/zuma-game",
         "Companies Asking This Question": "Baidu",
         "Topics": "String, Dynamic Programming, Stack, Breadth-First Search, Memoization"
+    },
+    {
+        "Difficulty": "EASY",
+        "Question": "Row with Maximum 1's",
+        "Frequency (Number of Companies)": 1,
+        "Link of Question": "https://leetcode.com/problems/row-with-maximum-ones",
+        "Companies Asking This Question": "Nike",
+        "Topics": "Array, Matrix"
     }
+
 ]
