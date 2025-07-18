@@ -33,7 +33,11 @@ const elements = {
     searchTopicsBubbles: document.getElementById('searchTopicsBubbles'),
     activeCompaniesCount: document.getElementById('activeCompaniesCount'),
     activeTopicsCount: document.getElementById('activeTopicsCount'),
-    clearFiltersBtn: document.getElementById('clearFiltersBtn')
+    clearFiltersBtn: document.getElementById('clearFiltersBtn'),
+    // Export/Import elements
+    exportDataBtn: document.getElementById('exportDataBtn'),
+    importDataBtn: document.getElementById('importDataBtn'),
+    importFileInput: document.getElementById('importFileInput')
 };
 
 // Utility functions
@@ -521,6 +525,85 @@ function hideLoading() {
     elements.loadingState.style.display = 'none';
 }
 
+// Export/Import functionality
+function exportUserData() {
+    const exportData = {
+        version: '1.0',
+        timestamp: new Date().toISOString(),
+        data: {
+            completedProblems: [...completedProblems]
+        }
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `relevant-leetcode-data-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+}
+
+
+function validateImportData(data) {
+    try {
+        if (!data || typeof data !== 'object') return false;
+        if (!data.data || typeof data.data !== 'object') return false;
+        
+        const { completedProblems } = data.data;
+        
+        // Validate completed problems
+        if (completedProblems && !Array.isArray(completedProblems)) return false;
+
+        return true;
+    } catch (error) {
+        console.error('Validation error:', error);
+        return false;
+    }
+}
+
+function handleFileImport(event) {
+    console.log('File import triggered');
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            console.log('Import data:', data);
+            if (!validateImportData(data)) {
+                alert('Invalid file format. Please select a valid export file.');
+                return;
+            }
+            
+            executeImport(data);
+            alert('Data imported successfully!');   
+        } catch (error) {
+            console.error('Import error:', error);
+            alert('Error reading file. Please make sure it\'s a valid JSON file.');
+        }
+    };
+    
+    reader.readAsText(file);
+}
+
+function executeImport(data) {
+    
+    if (!data?.data) return;
+
+    const { completedProblems: importedCompleted = []} = data.data;
+    importedCompleted.forEach(id => {
+        if (!completedProblems.has(id)) {
+            toggleComplete(id);
+        }
+    });
+}
+
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
     loadCompletedProblems();
@@ -531,6 +614,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Remove dangerous button entirely
     const dangerBtn = document.getElementById('dangerousButton');
     if (dangerBtn) dangerBtn.remove();
+
+    // Export/Import event listeners
+    elements.exportDataBtn?.addEventListener('click', exportUserData);
+    elements.importDataBtn?.addEventListener('click', () => elements.importFileInput?.click());
+    elements.importFileInput?.addEventListener('change', handleFileImport);
 
     // Clear filters
     elements.clearFiltersBtn?.addEventListener('click', clearAllFilters);

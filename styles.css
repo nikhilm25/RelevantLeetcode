@@ -118,6 +118,36 @@ body {
     display: none;
 }
 
+/* Sync Controls */
+.sync-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-right: 1rem;
+    border-right: 1px solid var(--border);
+}
+
+.sync-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+}
+
+.sync-btn:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+    border-color: var(--primary);
+}
+
+.sync-btn i {
+    margin-right: 0.3rem;
+}
+
 /* Container */
 .container {
     max-width: 1400px;
@@ -639,6 +669,26 @@ body {
         flex-wrap: wrap;
         justify-content: center;
         gap: 0.5rem;
+    }
+
+    .sync-controls {
+        flex-direction: row;
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .sync-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .sync-btn span {
+        display: none;
     }
 
     .header-link {
